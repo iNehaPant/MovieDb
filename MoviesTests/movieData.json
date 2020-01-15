@@ -1,0 +1,28 @@
+{
+  "page": 1,
+  "total_results": 10000,
+  "total_pages": 500,
+  "results": [
+    {
+      "popularity": 131.371,
+      "vote_count": 47,
+      "video": false,
+      "poster_path": "/eU0orGizEpOli4wtN8HtfOOJDlA.jpg",
+      "id": 516700,
+      "adult": false,
+      "backdrop_path": "/mlaX4c2M6usnhXHG5sYJcKVXflA.jpg",
+      "original_language": "id",
+      "original_title": "Gundala",
+      "genre_ids": [
+        28,
+        80,
+        18
+      ],
+      "title": "Gundala",
+      "vote_average": 5.3,
+      "overview": "Sancaka has lived on the streets since his parents left him. Living a hard life, Sancaka survives by thinking about his own safety. When the condition of the city gets worse and injustice rages throughout the country, Sancaka must decide whether he continues to live to look after himself or rise to become their oppressed hero.",
+      "release_date": "2019-08-29"
+    }
+
+  ]
+}
