@@ -20,8 +20,16 @@ class MoviesUITests: XCTestCase {
     }
 
     func testExample() {
+        
+        let tablesQuery = XCUIApplication().tables
+        let cell = tablesQuery.staticTexts["17 September 2019"]
+        XCTAssertNotNil(cell)
+//        tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["15 January 2020"]/*[[".cells.staticTexts[\"15 January 2020\"]",".staticTexts[\"15 January 2020\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.swipeUp()
+//        tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["10 December 2019"]/*[[".cells.staticTexts[\"10 December 2019\"]",".staticTexts[\"10 December 2019\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        //let cellAtIndex1 = tablesQuery.ele
     }
 
 }

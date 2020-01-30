@@ -14,7 +14,7 @@ let percentage = "%"
 
 class MovieCell: UITableViewCell {
     
-    var movie: Result? {
+    var movie: Movie? {
         didSet {
             guard let movieItem = movie else {return}
             if let imageURLStr = movieItem.posterPath {

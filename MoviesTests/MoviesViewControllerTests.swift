@@ -1,11 +1,9 @@
 import XCTest
 @testable import Movies
 
-class RepositoryViewControllerTests: XCTestCase {
+class MovieViewControllerTests: XCTestCase {
     
     var controller: MoviesViewController!
-    var tableView: UITableView!
-    var delegate: UITableViewDelegate!
     var movies = [Result]()
     var networkManager: NetworkManager!
     
@@ -13,10 +11,8 @@ class RepositoryViewControllerTests: XCTestCase {
         let url:URL = URL(string: "https://api.themoviedb.org/3/movie/popular?api_key=e600ae42efca88a43a1c4ddaedd275fe&language=en-US&page=1")!
         networkManager = NetworkManager(baseUrl: url)
         controller = MoviesViewController(networkManager: networkManager)
+        movies = MovieUtility().getMovieJSON()?.results ?? []
         controller.loadViewIfNeeded()
-        
-        tableView = controller.tableView
-        delegate = tableView.delegate
     }
     
     func testMovieData() {
@@ -35,24 +31,34 @@ class RepositoryViewControllerTests: XCTestCase {
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        controller = nil
+        networkManager = nil
     }
     
-    func testTableViewHasCells() {
-        let cell:MovieCell = controller.tableView.dequeueReusableCell(withIdentifier: String.init(describing: MovieCell.self)) as! MovieCell
-        
+    func test_TableView_Has_Cells_With_Data() {
+        let cell: MovieCell = controller.tableView.dequeueReusableCell(withIdentifier: String.init(describing: MovieCell.self)) as! MovieCell
+        cell.movie = movies.first
         XCTAssertNotNil(cell,
                         "TableView should be able to dequeue cell with identifier: 'Cell'")
+        XCTAssertEqual(cell.titleLabel.text, "neha")
+        XCTAssertEqual(cell.releaseDateLabel.text, "jgjhgj")
+
+    }
+    func test_TableView_Has_Cells_With_No_Data() {
+        let cell: MovieCell = controller.tableView.dequeueReusableCell(withIdentifier: String.init(describing: MovieCell.self)) as! MovieCell
+        cell.movie = nil
+        XCTAssertNotNil(cell,
+                        "TableView should be able to dequeue cell with identifier: 'Cell'")
+        XCTAssertEqual(cell.titleLabel.text, nil)
+        XCTAssertEqual(cell.releaseDateLabel.text, nil)
+        
+    }
+    func testTableVieDataSource() {
+        XCTAssertNotNil(controller.tableView.dataSource)
     }
     
-    
-    func testTableViewDelegateIsViewController() {
-        XCTAssertTrue(tableView.delegate === controller,
-                      "Controller should be delegate for the table view")
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testTableViewDelegate() {
+        XCTAssertNotNil(controller.tableView.dataSource)
     }
     
     func testPerformanceExample() {

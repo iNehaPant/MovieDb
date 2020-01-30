@@ -3,7 +3,7 @@ import UIKit
 
 class MoviesViewController: UIViewController {
     
-    var movies = [Result]() // array to hold movies data
+    var movies = [Movie]() // array to hold movies data
     var networkManager: NetworkManager
     var tableView = UITableView()
     var vSpinner: UIView? // loading indicator
@@ -46,10 +46,12 @@ class MoviesViewController: UIViewController {
     //MARK: NETWORK FETCH MOVIES
     func fetchMovies() {
         showSpinner(onView: self.view)
-        self.networkManager.fetchMovies {[weak self] (movies, errorMessage) in
-            guard let self = self else {return}
+        networkManager.fetchMovies { result in
             self.removeSpinner()
-            if movies.count > 0 {
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let movies):
                 self.movies = movies
                 DispatchQueue.main.async {[weak self] in
                     guard let self = self else {return}
