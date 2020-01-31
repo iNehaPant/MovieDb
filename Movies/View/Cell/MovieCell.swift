@@ -14,26 +14,14 @@ let percentage = "%"
 
 class MovieCell: UITableViewCell {
     
-    var movie: Movie? {
+    var movie: MoviesListViewModel? {
         didSet {
             guard let movieItem = movie else {return}
-            if let imageURLStr = movieItem.posterPath {
-                let imageUrl = URL(string: imgBaseURL + imageURLStr)!
-                moviewImageView.sd_setImage(with: imageUrl as URL?, placeholderImage: UIImage(named: defaultMovieImg), options: .transformAnimatedImage, progress: nil, completed: nil)
-                
-            }
-            if let title = movieItem.title {
-                titleLabel.text = title
-            }
-            
-            if let releaseDate = movieItem.releaseDate {
-                if let date: Date = releaseDate.toDate() {
-                    releaseDateLabel.text = date.toString()
-                }
-            }
-            if let voteAverage = movieItem.voteAverage{
-                votingAvgLabel.text = String(voteAverage*10) + percentage
-            }
+            let imageUrl = URL(string: imgBaseURL + movieItem.imageUrl)!
+            moviewImageView.sd_setImage(with: imageUrl as URL?, placeholderImage: UIImage(named: defaultMovieImg), options: .transformAnimatedImage, progress: nil, completed: nil)
+            titleLabel.text = movieItem.titleTextLbl
+            releaseDateLabel.text = movieItem.releaseDateTextLbl
+            votingAvgLabel.text = String(movieItem.votingAvgLbl) + percentage
         }
     }
     

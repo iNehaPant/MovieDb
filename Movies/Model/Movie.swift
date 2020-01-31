@@ -30,7 +30,7 @@ struct Movie: Codable {
     let genreIDS: [Int]?
     
     let video: Bool?
-    let voteAverage: Double?
+    let voteAverage: Double
     let title, releaseDate, originalLanguage, originalTitle: String?
     let backdropPath: String?
     let adult: Bool?

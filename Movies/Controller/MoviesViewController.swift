@@ -3,10 +3,14 @@ import UIKit
 
 class MoviesViewController: UIViewController {
     
-    var movies = [Movie]() // array to hold movies data
+    var movies = [MoviesListViewModel]() // array to hold movies data
     var networkManager: NetworkManager
     var tableView = UITableView()
     var vSpinner: UIView? // loading indicator
+    
+    lazy var viewModel: MoviesViewModel = {
+        return MoviesViewModel()
+    }()
     
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
@@ -20,11 +24,37 @@ class MoviesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTableView()
-        fetchMovies()
+        initViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    }
+    
+    func initViewModel() {
+        viewModel.fetchMoviesFailureClosure = {[weak self] in
+            guard let self = self else {return}
+            print(self.viewModel.alertMessage)
+        }
+        
+        viewModel.updateLoadingStatusClosure = {[weak self] () in
+            guard let self = self else {return}
+            if self.viewModel.isLoading {
+                self.showSpinner()
+            } else {
+                self.removeSpinner()
+            }
+        }
+        
+        viewModel.reloadTableViewClosure = {[weak self] in
+            guard let self = self else {return}
+            self.movies = self.viewModel.cellViewModel
+            DispatchQueue.main.async {() in
+                self.tableView.reloadData()
+            }
+        }
+        
+        viewModel.fetchMovies(networkManager)
     }
     
     //MARK: SET UP TABLEVIEW
@@ -41,24 +71,6 @@ class MoviesViewController: UIViewController {
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant: commonSpacing).isActive = true
 
-    }
-    
-    //MARK: NETWORK FETCH MOVIES
-    func fetchMovies() {
-        showSpinner(onView: self.view)
-        networkManager.fetchMovies { result in
-            self.removeSpinner()
-            switch result {
-            case .failure(let error):
-                print(error)
-            case .success(let movies):
-                self.movies = movies
-                DispatchQueue.main.async {[weak self] in
-                    guard let self = self else {return}
-                    self.tableView.reloadData()
-                }
-            }
-        }
     }
 }
 
@@ -91,8 +103,8 @@ extension MoviesViewController: UITableViewDelegate {
 
 extension MoviesViewController {
     //MARK: LOADING INDICATOR
-    func showSpinner(onView : UIView) {
-        let spinnerView = UIView.init(frame: onView.bounds)
+    func showSpinner() {
+        let spinnerView = UIView.init(frame: self.view.bounds)
         spinnerView.backgroundColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
         let ai = UIActivityIndicatorView.init(style: .whiteLarge)
         ai.startAnimating()
@@ -100,7 +112,7 @@ extension MoviesViewController {
         
         DispatchQueue.main.async {
             spinnerView.addSubview(ai)
-            onView.addSubview(spinnerView)
+            self.view.addSubview(spinnerView)
         }
         vSpinner = spinnerView
     }
